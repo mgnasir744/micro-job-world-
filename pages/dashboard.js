@@ -5,8 +5,8 @@ export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [screenshot, setScreenshot] = useState('');
   const [tasks, setTasks] = useState([
-    { id: 1, title: 'ফেসবুক পেজে লাইক ও শেয়ার করুন', link: 'https://facebook.com/example', reward: 5 },
-    { id: 2, 'title': 'ইউটিউব চ্যানেল সাবস্ক্রাইব করুন', link: 'https://youtube.com/example', reward: 10 }
+    { id: 1, title: 'BDzoon ফেসবুক পেজে লাইক ও শেয়ার করুন', link: 'https://www.facebook.com/BDzoon.official', reward: 5 },
+    { id: 2, title: 'BDzoon ওয়েবসাইট ভিজিট করে স্ক্রিনশট দিন', link: 'https://www.bdzoon.com', reward: 10 }
   ]);
   const router = useRouter();
 
@@ -52,7 +52,7 @@ export default function Dashboard() {
         </div>
 
         <div className="bg-yellow-50 p-3 rounded-md mb-6 border border-yellow-200">
-          <p className="text-xs text-yellow-800">🔗 আপনার রেফারেল লিংক: <span className="font-mono font-bold">https://yourdomain.com/?ref={user.username}</span></p>
+          <p className="text-xs text-yellow-800">🔗 আপনার রেফারেল লিংক: <span className="font-mono font-bold">https://micro-job-world.vercel.app/?ref={user.username}</span></p>
         </div>
 
         <h2 className="text-lg font-bold mb-4 text-gray-700">উপলব্ধ কাজ সমূহ:</h2>
