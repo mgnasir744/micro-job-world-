@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -44,66 +45,71 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row font-sans">
+      {/* à¦²à¦¾à¦‡à¦­ Tailwind CSS à¦à¦¬à¦‚ à¦«à¦¨à§à¦Ÿ à¦²à§‹à¦¡ à¦•à¦°à¦¾à¦° à¦œà¦¨à§à¦¯ Head à¦Ÿà§à¦¯à¦¾à¦— */}
+      <Head>
+        <title>BDZOON - Dashboard</title>
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+      </Head>
       
-      {/* বামপাশের সাইডবার (Sidebar) */}
+      {/* à¦¬à¦¾à¦®à¦ªà¦¾à¦¶à§‡à¦° à¦¸à¦¾à¦‡à¦¡à¦¬à¦¾à¦° (Sidebar) */}
       <div className="w-full md:w-64 bg-white border-r border-gray-200 flex flex-col justify-between p-6">
         <div>
-          {/* লোগো সেকশন */}
+          {/* à¦²à§‹à¦—à§‹ à¦¸à§‡à¦•à¦¶à¦¨ */}
           <div className="mb-8">
             <h1 className="text-2xl font-black text-red-600 tracking-tight">BDZOON</h1>
             <p className="text-xs text-gray-500 font-bold -mt-1 tracking-widest">Micro Job World</p>
           </div>
 
-          {/* মেনু লিংক সমূহ */}
+          {/* à¦®à§‡à¦¨à§ à¦²à¦¿à¦‚à¦• à¦¸à¦®à§‚à¦¹ */}
           <nav className="space-y-2">
-            <button className="w-full flex items-center space-x-3 bg-red-600 text-white px-4 py-3 rounded-xl font-medium text-sm transition shadow-md shadow-red-100">
-              <span>📊</span> <span>Dashboard</span>
+            <button className="w-full flex items-center space-x-3 bg-red-600 text-white px-4 py-3 rounded-xl font-medium text-sm transition shadow-md">
+              <span className="text-base">ðŸ“Š</span> <span>Dashboard</span>
             </button>
             <button className="w-full flex items-center space-x-3 text-gray-600 hover:bg-gray-50 px-4 py-3 rounded-xl font-medium text-sm transition">
-              <span>💼</span> <span>Available Jobs</span>
+              <span className="text-base">ðŸ’¼</span> <span>Available Jobs</span>
             </button>
             <button className="w-full flex items-center space-x-3 text-gray-600 hover:bg-gray-50 px-4 py-3 rounded-xl font-medium text-sm transition">
-              <span>📝</span> <span>My Submissions</span>
+              <span className="text-base">ðŸ“</span> <span>My Submissions</span>
             </button>
             <button className="w-full flex items-center space-x-3 text-gray-600 hover:bg-gray-50 px-4 py-3 rounded-xl font-medium text-sm transition">
-              <span>👥</span> <span>Referrals</span>
+              <span className="text-base">ðŸ‘¥</span> <span>Referrals</span>
             </button>
             <button className="w-full flex items-center space-x-3 text-gray-600 hover:bg-gray-50 px-4 py-3 rounded-xl font-medium text-sm transition">
-              <span>💰</span> <span>Earnings</span>
+              <span className="text-base">ðŸ’°</span> <span>Earnings</span>
             </button>
             <button className="w-full flex items-center space-x-3 text-gray-600 hover:bg-gray-50 px-4 py-3 rounded-xl font-medium text-sm transition">
-              <span>👤</span> <span>Profile</span>
+              <span className="text-base">ðŸ‘¤</span> <span>Profile</span>
             </button>
           </nav>
         </div>
 
-        {/* সাইডবার রেফারেল বক্স */}
+        {/* à¦¸à¦¾à¦‡à¦¡à¦¬à¦¾à¦° à¦°à§‡à¦«à¦¾à¦°à§‡à¦² à¦¬à¦•à§à¦¸ */}
         <div className="mt-8 pt-6 border-t border-gray-100">
           <div className="bg-red-50 p-4 rounded-2xl border border-red-100">
             <h4 className="text-xs font-bold text-red-700 mb-2">Your Referral Link</h4>
-            <input type="text" readOnly value={referralLink} className="w-full text-xs bg-white p-2.5 rounded-lg border border-gray-200 text-gray-600 focus:outline-none font-mono mb-2" />
+            <input type="text" readOnly value={referralLink} className="w-full text-xs bg-white p-2.5 rounded-lg border border-gray-200 text-gray-600 focus:outline-none mb-2" />
             <button onClick={() => { navigator.clipboard.writeText(referralLink); alert('Link Copied!'); }} className="w-full bg-red-600 text-white text-xs py-2 rounded-lg font-bold hover:bg-red-700 transition">
               Copy Link
             </button>
           </div>
           
           <button onClick={() => { localStorage.clear(); router.push('/'); }} className="w-full flex items-center justify-center space-x-2 text-red-600 hover:bg-red-50 mt-4 p-2.5 rounded-xl text-sm font-bold transition">
-            <span>🚪</span> <span>Logout</span>
+            <span>ðŸšª</span> <span>Logout</span>
           </button>
         </div>
       </div>
 
-      {/* মূল কন্টেন্ট এরিয়া (Main Content) */}
+      {/* à¦®à§‚à¦² à¦•à¦¨à§à¦Ÿà§‡à¦¨à§à¦Ÿ à¦à¦°à¦¿à§Ÿà¦¾ (Main Content) */}
       <div className="flex-1 p-6 md:p-10 overflow-y-auto">
         
-        {/* টপ বার (Top Bar) */}
+        {/* à¦Ÿà¦ª à¦¬à¦¾à¦° (Top Bar) */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 pb-4 border-b border-gray-200 gap-4">
           <div>
             <h2 className="text-2xl md:text-3xl font-extrabold text-gray-800">Welcome, <span className="text-red-600">{user.username}</span> !</h2>
             <p className="text-sm text-gray-500 mt-1">Complete tasks below and earn easy rewards.</p>
           </div>
           <div className="flex items-center space-x-4 bg-white px-4 py-2 rounded-2xl shadow-sm border border-gray-100">
-            <div className="w-10 h-10 bg-red-100 text-red-600 rounded-full flex items-center justify-center font-bold text-lg">👤</div>
+            <div className="w-10 h-10 bg-red-100 text-red-600 rounded-full flex items-center justify-center font-bold text-lg">ðŸ‘¤</div>
             <div>
               <p className="text-xs text-gray-400 font-bold uppercase">User Account</p>
               <p className="text-sm font-black text-gray-800">{user.username}</p>
@@ -111,19 +117,19 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* স্ট্যাটাস ও ব্যালেন্স কার্ড সমূহ (Top Cards) */}
+        {/* à¦¸à§à¦Ÿà§à¦¯à¦¾à¦Ÿà¦¾à¦¸ à¦“ à¦¬à§à¦¯à¦¾à¦²à§‡à¦¨à§à¦¸ à¦•à¦¾à¦°à§à¦¡ à¦¸à¦®à§‚à¦¹ (Top Cards) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          {/* ব্যালেন্স কার্ড */}
+          {/* à¦¬à§à¦¯à¦¾à¦²à§‡à¦¨à§à¦¸ à¦•à¦¾à¦°à§à¦¡ */}
           <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-400 font-bold">Your Balance</p>
-              <p className="text-3xl font-black text-gray-800 mt-1">৳ {user.balance || 0}</p>
+              <p className="text-3xl font-black text-gray-800 mt-1">à§³ {user.balance || 0}</p>
             </div>
-            <div className="w-14 h-14 bg-red-50 rounded-2xl flex items-center justify-center text-2xl">👛</div>
+            <div className="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center text-xl">ðŸ‘›</div>
           </div>
 
-          {/* ব্যানার কার্ড */}
-          <div className="md:col-span-2 bg-gradient-to-r from-red-500 to-red-600 p-6 rounded-3xl text-white shadow-xl shadow-red-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          {/* à¦¬à§à¦¯à¦¾à¦¨à¦¾à¦° à¦•à¦¾à¦°à§à¦¡ */}
+          <div className="md:col-span-2 bg-red-600 p-6 rounded-3xl text-white shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
               <h3 className="text-xl font-black">Complete Micro Jobs & Earn Easily</h3>
               <p className="text-sm text-red-100 mt-1 max-w-sm">Simple tasks, instant rewards. Invite your friends to earn double reference bonus!</p>
@@ -134,32 +140,32 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* কাজের তালিকা (Available Jobs Section) */}
+        {/* à¦•à¦¾à¦œà§‡à¦° à¦¤à¦¾à¦²à¦¿à¦•à¦¾ (Available Jobs Section) */}
         <div className="bg-white p-6 md:p-8 rounded-3xl border border-gray-100 shadow-sm">
           <div className="flex items-center space-x-3 mb-6">
-            <span className="text-2xl">💼</span>
+            <span className="text-2xl">ðŸ’¼</span>
             <h3 className="text-lg font-black text-gray-800">Available Jobs</h3>
           </div>
 
           <div className="space-y-6">
             {tasks.map(task => (
-              <div key={task.id} className="border border-gray-100 p-5 rounded-2xl flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-gray-50/50 hover:bg-gray-50 transition">
+              <div key={task.id} className="border border-gray-100 p-5 rounded-2xl flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-gray-50 hover:bg-gray-100 transition">
                 <div className="flex items-start space-x-4">
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl shrink-0 ${task.type === 'fb' ? 'bg-blue-50 text-blue-600' : 'bg-green-50 text-green-600'}`}>
-                    {task.type === 'fb' ? '👍' : '🌐'}
+                    {task.type === 'fb' ? 'ðŸ‘' : 'ðŸŒ'}
                   </div>
                   <div>
                     <h4 className="font-bold text-gray-800 text-base">{task.title}</h4>
-                    <p className="text-sm font-extrabold text-red-600 mt-1">Reward: ৳ {task.reward}</p>
+                    <p className="text-sm font-extrabold text-red-600 mt-1">Reward: à§³ {task.reward}</p>
                   </div>
                 </div>
 
                 <div className="w-full lg:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                   <a href={task.link} target="_blank" rel="noreferrer" className="bg-red-600 text-white text-center px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-red-700 transition shadow-sm">
-                    Click here to work →
+                    Click here to work â†’
                   </a>
                   <div className="flex items-center bg-white border border-gray-200 rounded-xl p-1 px-2 flex-1 sm:flex-initial">
-                    <input type="file" accept="image/*" onChange={handleFileChange} className="text-xs w-full max-w-[150px] file:hidden cursor-pointer p-1 text-gray-500 font-medium" />
+                    <input type="file" accept="image/*" onChange={handleFileChange} className="text-xs w-full max-w-[150px] cursor-pointer p-1 text-gray-500 font-medium" />
                   </div>
                   <button onClick={() => submitTask(task.id, task.reward)} className="bg-gray-900 text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-black transition shadow-sm">
                     Submit Proof
@@ -170,7 +176,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* বটম কাউন্টার গ্রিড (Bottom Stats Counters) */}
+        {/* à¦«à§à¦Ÿà¦¾à¦° à¦•à¦¾à¦‰à¦¨à§à¦Ÿà¦¾à¦° à¦—à§à¦°à¦¿à¦¡ */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-8 text-center">
           <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
             <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Jobs</p>
@@ -178,7 +184,7 @@ export default function Dashboard() {
           </div>
           <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
             <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Earnings</p>
-            <p className="text-xl font-black text-green-600 mt-1">৳ 0.00</p>
+            <p className="text-xl font-black text-green-600 mt-1">à§³ 0.00</p>
           </div>
           <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
             <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Referrals</p>
@@ -186,8 +192,8 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* কপিরাইট ফুটার */}
-        <p className="text-center text-xs text-gray-400 font-medium mt-12">© 2026 BDZOON. All rights reserved.</p>
+        {/* à¦•à¦ªà¦¿à¦°à¦¾à¦‡à¦Ÿ à¦«à§à¦Ÿà¦¾à¦° */}
+        <p className="text-center text-xs text-gray-400 font-medium mt-12">Â© 2026 BDZOON. All rights reserved.</p>
       </div>
 
     </div>
