@@ -2,22 +2,31 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 export default function AdminPanel() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [password, setPassword] = useState('');
   const [submissions, setSubmissions] = useState([]);
   const router = useRouter();
 
+  // আপনার অ্যাডমিন প্যানেলের গোপন পাসওয়ার্ড (আপনি চাইলে 123 পরিবর্তন করতে পারেন)
+  const ADMIN_PASSWORD = "Tamanna41"; 
+
   useEffect(() => {
-    const loggedInUser = JSON.parse(localStorage.getItem('user'));
-    if (!loggedInUser || loggedInUser.role !== 'admin') {
-      router.push('/');
-    } else {
-      fetchSubmissions();
-    }
+    fetchSubmissions();
   }, []);
 
   const fetchSubmissions = async () => {
     const res = await fetch('/api/admin');
     const data = await res.json();
     setSubmissions(data.submissions || []);
+  };
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (password === ADMIN_PASSWORD) {
+      setIsLoggedIn(true);
+    } else {
+      alert('ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।');
+    }
   };
 
   const handleAction = async (id, username, reward, action) => {
@@ -30,10 +39,30 @@ export default function AdminPanel() {
     fetchSubmissions();
   };
 
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-gray-100 font-sans">
+        <div className="bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-md">
+          <h2 className="text-xl font-bold text-center mb-6 text-blue-400">Super Admin Security LogIn</h2>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-300">সিক্রেট অ্যাডমিন পাসওয়ার্ড দিন</label>
+              <input type="password" required value={password} onChange={e => setPassword(e.target.value)} className="mt-1 block w-full p-2 border border-gray-600 bg-gray-700 rounded-md text-white" />
+            </div>
+            <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700">প্রবেশ করুন</button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 p-6 font-sans">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-2xl font-bold mb-6 text-blue-400">Super Admin & Team Dashboard</h1>
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold text-blue-400">Super Admin & Team Dashboard</h1>
+          <button onClick={() => router.push('/')} className="bg-gray-700 px-4 py-1.5 rounded text-xs">মূল সাইটে যান</button>
+        </div>
         <div className="bg-gray-800 rounded-lg overflow-hidden shadow-xl">
           <table className="w-full text-left border-collapse">
             <thead>
