@@ -6,7 +6,7 @@ export default function Dashboard() {
     fullName: "Nasir Rahman Talukder",
     phone: "+9687005282",
     username: "nasir98",
-    password: "••••••••"
+    password: "â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
   });
 
   // UI States
@@ -84,7 +84,7 @@ export default function Dashboard() {
 
           <div className="bg-red-50 rounded-2xl p-4 border border-red-100 text-center">
             <h5 className="text-xs font-bold text-red-700 uppercase tracking-wider mb-1">Share & Earn More</h5>
-            <p className="text-[11px] text-gray-600 mb-2">Earn ৳5 - ৳10 per task!</p>
+            <p className="text-[11px] text-gray-600 mb-2">Earn à§³5 - à§³10 per task!</p>
             <div className="flex justify-center gap-2">
               <span className="w-6 h-6 rounded-full bg-white border border-gray-200 flex items-center justify-center text-xs font-bold text-red-600 cursor-pointer hover:bg-red-50">f</span>
               <span className="w-6 h-6 rounded-full bg-white border border-gray-200 flex items-center justify-center text-xs font-bold text-red-600 cursor-pointer hover:bg-red-50">t</span>
@@ -125,7 +125,7 @@ export default function Dashboard() {
             <div className="relative z-10">
               <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Your Balance</p>
               <h2 className="text-4xl font-black text-gray-900 flex items-center gap-1">
-                <span className="text-red-600 font-sans">৳</span> 0
+                <span className="text-red-600 font-sans">à§³</span> 0
               </h2>
               <button className="mt-4 bg-red-50 text-red-600 font-bold text-xs px-4 py-2 rounded-xl border border-red-200 hover:bg-red-100 transition-all">
                 Withdraw Funds
@@ -173,13 +173,13 @@ export default function Dashboard() {
                   <h4 className="text-sm font-bold text-gray-900">Like and share the BDzoon Facebook page.</h4>
                   <p className="text-xs text-gray-400 font-medium mt-0.5">Visit, complete the action, and return with verification screenshot proof.</p>
                   <div className="inline-flex items-center gap-1.5 bg-red-50 text-red-600 font-bold text-xs px-2.5 py-1 rounded-lg mt-2">
-                    <span>Reward:</span> <span>৳ 5</span>
+                    <span>Reward:</span> <span>à§³ 5</span>
                   </div>
                 </div>
               </div>
               <div className="w-full xl:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <a href="https://www.facebook.com/BDzoon.official" target="_blank" rel="noopener noreferrer" className="bg-red-600 text-white font-bold text-xs px-4 py-2.5 rounded-xl hover:bg-red-700 transition-all text-center shrink-0">
-                  Click here to work →
+                  Click here to work â†’
                 </a>
                 <div className="flex items-center bg-white border border-gray-200 rounded-xl p-1 flex-1 sm:w-48">
                   <input type="file" className="block w-full text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 cursor-pointer" />
@@ -200,13 +200,13 @@ export default function Dashboard() {
                   <h4 className="text-sm font-bold text-gray-900">Visit the BDzoon website and take a screenshot.</h4>
                   <p className="text-xs text-gray-400 font-medium mt-0.5">Stay on site for 1 minute and snap the landing interface view screen.</p>
                   <div className="inline-flex items-center gap-1.5 bg-red-50 text-red-600 font-bold text-xs px-2.5 py-1 rounded-lg mt-2">
-                    <span>Reward:</span> <span>৳ 10</span>
+                    <span>Reward:</span> <span>à§³ 10</span>
                   </div>
                 </div>
               </div>
               <div className="w-full xl:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <a href="https://www.bdzoon.com" target="_blank" rel="noopener noreferrer" className="bg-red-600 text-white font-bold text-xs px-4 py-2.5 rounded-xl hover:bg-red-700 transition-all text-center shrink-0">
-                  Click here to work →
+                  Click here to work â†’
                 </a>
                 <div className="flex items-center bg-white border border-gray-200 rounded-xl p-1 flex-1 sm:w-48">
                   <input type="file" className="block w-full text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 cursor-pointer" />
@@ -237,7 +237,7 @@ export default function Dashboard() {
             </div>
             <div>
               <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Total Earnings</p>
-              <p className="text-lg font-black text-gray-900 leading-none mt-0.5">৳ 0</p>
+              <p className="text-lg font-black text-gray-900 leading-none mt-0.5">à§³ 0</p>
             </div>
           </div>
           <div className="bg-white border border-gray-100 p-4 rounded-2xl flex items-center gap-3.5 shadow-sm">
@@ -254,4 +254,97 @@ export default function Dashboard() {
         {/* REUSEABLE COMPONENT: USER PROFILE EDIT SECTION */}
         <section className="bg-white border border-gray-200 rounded-3xl p-4 md:p-6 shadow-sm">
           <div className="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4">
-            <div className="w-10 h-10 bg-red-50 rounded-xl flex items-center
+            <div className="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center text-red-600">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 tracking-tight">Your Account Profile Settings</h3>
+              <p className="text-xs text-gray-400 font-medium">As a user, you can safely modify your identification details here. System access logs remain highly protected.</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
+            <div>
+              <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Full Name</p>
+              <p className="text-sm font-semibold text-gray-900 bg-gray-50 border border-gray-100 p-3 rounded-xl">{profile.fullName}</p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Mobile / Username</p>
+              <p className="text-sm font-semibold text-gray-900 bg-gray-50 border border-gray-100 p-3 rounded-xl">{profile.phone}</p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Account ID</p>
+              <p className="text-sm font-semibold text-gray-900 bg-gray-50 border border-gray-100 p-3 rounded-xl">{profile.username}</p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Password</p>
+              <p className="text-sm font-semibold text-gray-900 bg-gray-50 border border-gray-100 p-3 rounded-xl">â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢</p>
+            </div>
+            <div className="md:col-span-2">
+              <button onClick={() => { setTempProfile({ ...profile }); setIsEditModalOpen(true); }} className="bg-red-600 text-white font-bold text-xs px-5 py-3 rounded-xl hover:bg-red-700 transition-all shadow-sm">
+                Edit Profile Details
+              </button>
+            </div>
+          </div>
+
+          {/* CRITICAL SECURITY INFO BOX */}
+          <div className="mt-6 bg-amber-50 border border-amber-200 rounded-2xl p-4 flex gap-3">
+            <div className="text-amber-600 shrink-0 mt-0.5">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m0-6v2m0-6M7 11a5 5 0 0110 0v2a5 5 0 01-10 0v-2z" /></svg>
+            </div>
+            <div className="text-xs text-amber-800 font-medium leading-relaxed">
+              <strong className="block font-bold text-amber-900 mb-0.5">Security System Shield Active</strong>
+              à¦¸à§à¦ªà¦¾à¦° à¦…à§à¦¯à¦¾à¦¡à¦®à¦¿à¦¨ à¦ªà§à¦¯à¦¾à¦¨à§‡à¦² à¦•à¦¨à¦«à¦¿à¦—à¦¾à¦°à§‡à¦¶à¦¨, à¦•à§‹à¦° à¦°à§‡à¦Ÿ à¦¸à§‡à¦Ÿà¦¿à¦‚ à¦à¦¬à¦‚ à¦¡à¦¾à¦Ÿà¦¾à¦¬à§‡à¦œ à¦®à¦¡à¦¿à¦‰à¦²à¦¸à¦®à§‚à¦¹ à¦…à¦¤à§à¦¯à¦¨à§à¦¤ à¦¸à§à¦°à¦•à§à¦·à¦¿à¦¤à¥¤ à¦¸à¦¾à¦§à¦¾à¦°à¦£ à¦‡à¦‰à¦œà¦¾à¦° à¦…à§à¦¯à¦¾à¦•à¦¾à¦‰à¦¨à§à¦Ÿ à¦²à§‡à¦­à§‡à¦² à¦¥à§‡à¦•à§‡ à¦•à§‹à¦¨à§‹à¦­à¦¾à¦¬à§‡à¦‡ à¦¸à¦¿à¦¸à§à¦Ÿà§‡à¦® à¦°à§à¦Ÿ à¦ªà§à¦¯à¦¾à¦°à¦¾à¦®à¦¿à¦Ÿà¦¾à¦° à¦…à§à¦¯à¦¾à¦•à§à¦¸à§‡à¦¸ à¦¬à¦¾ à¦à¦¡à¦¿à¦Ÿ à¦•à¦°à¦¾ à¦¸à¦®à§à¦­à¦¬ à¦¨à§Ÿà¥¤
+            </div>
+          </div>
+        </section>
+
+        {/* FOOTER */}
+        <footer className="mt-12 text-center text-xs text-gray-400 font-medium border-t border-gray-200/60 pt-6">
+          Â© 2026 BDZOON. All rights reserved. Professional Luxury Dashboard Panel.
+        </footer>
+      </main>
+
+      {/* EDIT MODAL DIALOG */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
+          <div className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl border border-gray-100">
+            <div className="bg-gradient-to-r from-red-600 to-red-700 p-5 text-white flex justify-between items-center">
+              <h3 className="font-extrabold text-base tracking-tight">Update Profile Information</h3>
+              <button onClick={() => setIsEditModalOpen(false)} className="text-white/80 hover:text-white transition-all">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            <form onSubmit={handleProfileSave} className="p-6 space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Full Name</label>
+                <input type="text" required value={tempProfile.fullName} onChange={(e) => setTempProfile({ ...tempProfile, fullName: e.target.value })} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:outline-none focus:border-red-500 focus:bg-white transition-all" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Mobile Number</label>
+                <input type="text" required value={tempProfile.phone} onChange={(e) => setTempProfile({ ...tempProfile, phone: e.target.value })} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:outline-none focus:border-red-500 focus:bg-white transition-all" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Username ID</label>
+                <input type="text" required value={tempProfile.username} onChange={(e) => setTempProfile({ ...tempProfile, username: e.target.value })} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:outline-none focus:border-red-500 focus:bg-white transition-all" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">New Password</label>
+                <input type="password" required value={tempProfile.password} onChange={(e) => setTempProfile({ ...tempProfile, password: e.target.value })} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:outline-none focus:border-red-500 focus:bg-white transition-all" />
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button type="button" onClick={() => setIsEditModalOpen(false)} className="flex-1 bg-gray-100 text-gray-700 font-bold text-xs py-3 rounded-xl hover:bg-gray-200 transition-all">
+                  Cancel
+                </button>
+                <button type="submit" className="flex-1 bg-red-600 text-white font-bold text-xs py-3 rounded-xl hover:bg-red-700 transition-all shadow-md shadow-red-100">
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+}
