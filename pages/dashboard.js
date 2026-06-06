@@ -1,290 +1,364 @@
-import { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 export default function Dashboard() {
-  const [profile, setProfile] = useState({
-    fullName: "Nasir Rahman Talukder",
-    phone: "+9687005282",
-    username: "nasir98",
-    password: "••••••••"
+  // ১. নেভিগেশন স্টেট
+  const [activeSection, setActiveSection] = useState('dashboard');
+
+  // ইউজার ডাটা স্টেট (৬. প্রোফাইল আপডেট)
+  const [userData, setUserData] = useState({
+    name: 'Nasir Rahman Talukder',
+    mobile: '+9687005282',
+    username: 'nasir_talukder',
+    balance: 0,
+    totalJobs: 2,
+    totalEarnings: 0,
+    totalReferrals: 0,
   });
 
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [tempProfile, setTempProfile] = useState({ ...profile });
-  const [copied, setCopied] = useState(false);
+  // রেফারেল লিংক কপি স্টেট
+  const [copyText, setCopyText] = useState('Copy Link');
+  const referralLink = `https://micro-job-world.vercel.app/?ref=${userData.mobile}`;
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(`https://micro-job-world.vercel.app/?ref=${profile.phone}`);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  // ফাইল আপলোড স্টেট
+  const [taskFiles, setTaskFiles] = useState({ task1: null, task2: null });
+
+  // প্রোফাইল মডাল স্টেট
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editForm, setEditForm] = useState({
+    name: userData.name,
+    mobile: userData.mobile,
+    username: userData.username,
+    password: '',
+  });
+
+  // ৫. স্টার্ট ওয়ার্কিং স্ক্রোল রেফারেন্স
+  const jobsSectionRef = useRef(null);
+
+  // ৪. কপি লিংক ফাংশন
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(referralLink);
+    setCopyText('Copied!');
+    setTimeout(() => setCopyText('Copy Link'), 2000);
   };
 
+  // ৩. প্রুফ সাবমিট ফাংশন
+  const handleFileChange = (taskKey, e) => {
+    if (e.target.files && e.target.files[0]) {
+      setTaskFiles({ ...taskFiles, [taskKey]: e.target.files[0] });
+    }
+  };
+
+  const handleSubmitProof = (taskKey, taskName) => {
+    if (!taskFiles[taskKey]) {
+      alert('Please choose a file first!');
+      return;
+    }
+    alert(`Proof Submitted Successfully for: "${taskName}"!`);
+    // এখানে ব্যাকএন্ড এপিআই কল করতে পারেন
+  };
+
+  // ৫. স্ক্রোল ফাংশন
+  const scrollToJobs = () => {
+    jobsSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // ৬. প্রোফাইল সেভ ফাংশন
   const handleProfileSave = (e) => {
     e.preventDefault();
-    setProfile({ ...tempProfile });
-    setIsEditModalOpen(false);
+    setUserData({
+      ...userData,
+      name: editForm.name,
+      mobile: editForm.mobile,
+      username: editForm.username,
+    });
+    setIsModalOpen(false);
+    alert('Profile Updated Successfully!');
+  };
+
+  // ৭. লগআউট ফাংশন
+  const handleLogout = () => {
+    if (confirm('Are you sure you want to logout?')) {
+      alert('Logged out successfully!');
+      // সেশন বা টোকেন ক্লিয়ার করার লজিক এখানে হবে
+    }
+  };
+
+  // কমন ইনলাইন স্টাইলস (Tailwind ব্যাকআপ থিম)
+  const styles = {
+    primaryRed: '#D62222',
+    lightRedBg: '#FFF1F1',
+    textDark: '#1A1A1A',
+    textMuted: '#666666',
+    borderLight: '#F0F0F0',
+    sidebarItem: (isActive) => ({
+      display: 'flex',
+      alignItems: 'center',
+      gap: '12px',
+      width: '100%',
+      padding: '12px 16px',
+      borderRadius: '8px',
+      backgroundColor: isActive ? '#D62222' : 'transparent',
+      color: isActive ? '#FFFFFF' : '#444444',
+      border: 'none',
+      textAlign: 'left',
+      cursor: 'pointer',
+      fontSize: '14px',
+      fontWeight: isActive ? '600' : '500',
+      transition: 'all 0.2s ease',
+    }),
+    card: {
+      backgroundColor: '#FFFFFF',
+      borderRadius: '16px',
+      padding: '24px',
+      boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
+      border: '1px solid #F0F0F0',
+    },
+    btnRed: {
+      backgroundColor: '#D62222',
+      color: '#FFFFFF',
+      padding: '10px 20px',
+      borderRadius: '8px',
+      fontWeight: '600',
+      border: 'none',
+      cursor: 'pointer',
+      fontSize: '14px',
+    }
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'row', minHeight: '100vh', backgroundColor: '#f8f9fa', fontFamily: 'sans-serif', margin: 0, padding: 0 }} className="min-h-screen bg-[#f8f9fa] flex flex-col md:flex-row">
+    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#FAFAFA', fontFamily: 'sans-serif', color: styles.textDark }}>
       
-      {/* SIDEBAR */}
-      <aside style={{ width: '260px', backgroundColor: '#ffffff', borderRight: '1px solid #e5e7eb', padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'between', flexShrink: 0 }} className="w-full md:w-64 bg-white border-r border-gray-200 p-5 flex flex-col shrink-0">
+      {/* ১. বাম পাশের নেভিগেশন মেনু (Sidebar) */}
+      <aside style={{ width: '280px', backgroundColor: '#FFFFFF', borderRight: `1px solid ${styles.borderLight}`, padding: '24px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
         <div>
-          {/* Logo */}
-          <div style={{ marginBottom: '24px', paddingLeft: '8px' }}>
-            <div style={{ color: '#dc2626', fontWeight: '900', fontSize: '24px', letterSpacing: '-0.5px' }}>
-              BDZOON
-              <span style={{ display: 'block', fontSize: '10px', uppercase: 'true', letterSpacing: '1.5px', color: '#9ca3af', fontWeight: '700', marginTop: '-2px' }}>Micro Job World</span>
-            </div>
-          </div>
-
-          {/* Navigation Links */}
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', fontSize: '14px', fontWeight: '600', borderRadius: '12px', backgroundColor: '#dc2626', color: '#ffffff', textDecoration: 'none' }}>
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z" /></svg>
-              Dashboard
-            </a>
-            <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', fontSize: '14px', fontWeight: '500', borderRadius: '12px', color: '#4b5563', textDecoration: 'none' }}>
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-              Available Jobs
-            </a>
-            <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', fontSize: '14px', fontWeight: '500', borderRadius: '12px', color: '#4b5563', textDecoration: 'none' }}>
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
-              My Submissions
-            </a>
-            <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', fontSize: '14px', fontWeight: '500', borderRadius: '12px', color: '#4b5563', textDecoration: 'none' }}>
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-              Referrals
-            </a>
-            <button onClick={() => setIsEditModalOpen(true)} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', fontSize: '14px', fontWeight: '500', borderRadius: '12px', color: '#4b5563', border: 'none', backgroundColor: 'transparent', width: '100%', textAlign: 'left', cursor: 'pointer' }}>
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-              Profile Settings
-            </button>
-            <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', fontSize: '14px', fontWeight: '500', borderRadius: '12px', color: '#4b5563', textDecoration: 'none' }}>
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-              Logout
-            </a>
-          </nav>
+          <h2 style={{ color: styles.primaryRed, margin: 0, fontSize: '24px', fontWeight: '700', letterSpacing: '0.5px' }}>BDZOON</h2>
+          <p style={{ fontSize: '11px', color: styles.textMuted, margin: '2px 0 0 0' }}>Micro Job World</p>
         </div>
 
-        {/* Referral Card Side Container */}
-        <div style={{ marginTop: '24px' }}>
-          <div style={{ backgroundColor: '#dc2626', color: '#ffffff', borderRadius: '16px', padding: '16px', marginBottom: '16px' }}>
-            <h4 style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px', margin: '0 0 8px 0', opacity: 0.9 }}>Your Referral Link</h4>
-            <div style={{ backgroundColor: 'rgba(0,0,0,0.1)', fontSize: '11px', padding: '8px', borderRadius: '8px', wordBreak: 'break-all', fontFamily: 'monospace', marginBottom: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
-              {`https://micro-job-world.vercel.app/?ref=${profile.phone}`}
-            </div>
-            <button onClick={handleCopy} style={{ width: '100%', backgroundColor: '#ffffff', color: '#dc2626', fontWeight: '700', padding: '8px 0', borderRadius: '12px', fontSize: '12px', border: 'none', cursor: 'pointer' }}>
-              {copied ? 'Copied!' : 'Copy Link'}
-            </button>
-          </div>
+        <nav style={{ display: 'flex', flexDirection: 'column', gap: '6px', flex: 1 }}>
+          <button onClick={() => setActiveSection('dashboard')} style={styles.sidebarItem(activeSection === 'dashboard')}>
+            <span style={{ fontSize: '18px' }}>📊</span> Dashboard
+          </button>
+          <button onClick={() => { setActiveSection('jobs'); setTimeout(scrollToJobs, 100); }} style={styles.sidebarItem(activeSection === 'jobs')}>
+            <span style={{ fontSize: '18px' }}>💼</span> Available Jobs
+          </button>
+          <button onClick={() => setActiveSection('submissions')} style={styles.sidebarItem(activeSection === 'submissions')}>
+            <span style={{ fontSize: '18px' }}>📝</span> My Submissions
+          </button>
+          <button onClick={() => setActiveSection('referrals')} style={styles.sidebarItem(activeSection === 'referrals')}>
+            <span style={{ fontSize: '18px' }}>👥</span> Referrals
+          </button>
+          <button onClick={() => setIsModalOpen(true)} style={styles.sidebarItem(false)}>
+            <span style={{ fontSize: '18px' }}>⚙️</span> Profile Settings
+          </button>
+          <button onClick={handleLogout} style={{ ...styles.sidebarItem(false), marginTop: 'auto', color: styles.primaryRed }}>
+            <span style={{ fontSize: '18px' }}>🚪</span> Logout
+          </button>
+        </nav>
 
-          <div style={{ backgroundColor: '#fef2f2', borderRadius: '16px', padding: '16px', border: '1px solid #fee2e2', textAlign: 'center' }}>
-            <h5 style={{ fontSize: '11px', fontWeight: '700', color: '#b91c1c', textTransform: 'uppercase', margin: '0 0 4px 0' }}>Share & Earn More</h5>
-            <p style={{ fontSize: '11px', color: '#4b5563', margin: '0 0 8px 0' }}>Share your link and earn ৳5 - ৳10 per task!</p>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
-              <span style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: '#ffffff', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyAxial: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '700', color: '#dc2626' }}>f</span>
-              <span style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: '#ffffff', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyAxial: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '700', color: '#dc2626' }}>t</span>
-              <span style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: '#ffffff', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyAxial: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '700', color: '#dc2626' }}>w</span>
-            </div>
+        {/* ৪. রেফারেল লিংক বক্স */}
+        <div style={{ backgroundColor: styles.lightRedBg, borderRadius: '12px', padding: '16px', border: `1px solid #FFE0E0` }}>
+          <p style={{ fontSize: '11px', fontWeight: '700', color: styles.primaryRed, marginTop: 0, marginBottom: '8px', uppercase: 'true' }}>YOUR REFERRAL LINK</p>
+          <div style={{ backgroundColor: '#FFFFFF', padding: '8px', borderRadius: '6px', fontSize: '11px', overflowX: 'auto', whiteSpace: 'nowrap', border: '1px solid #EFEFEF', marginBottom: '10px', color: styles.textMuted }}>
+            {referralLink}
           </div>
+          <button onClick={handleCopyLink} style={{ ...styles.btnRed, width: '100%', padding: '8px', fontSize: '12px' }}>
+            {copyText}
+          </button>
         </div>
       </aside>
 
-      {/* MAIN CONTENT AREA */}
-      <main style={{ flex: 1, padding: '32px', maxWidth: '1200px', width: '100%', boxSizing: 'border-box' }}>
+      {/* ডানপাশের মূল কন্টেন্ট উইন্ডো */}
+      <main style={{ flex: 1, padding: '40px', overflowY: 'auto', maxWidth: '1200px', margin: '0 auto' }}>
         
-        {/* HEADER BAR */}
-        <header style={{ display: 'flex', justifyContent: 'between', alignItems: 'center', justifyContent: 'space-between', marginBottom: '32px' }}>
-          <div>
-            <h1 style={{ fontSize: '28px', fontWeight: '800', color: '#111827', margin: 0 }}>
-              Welcome, <span style={{ color: '#dc2626' }}>{profile.phone}</span> !
+        {/* হেডার / ওয়েলকাম সেকশন */}
+        <header style={{ display: 'flex', justifyContent: 'between', alignItems: 'center', marginBottom: '32px', width: '100%' }}>
+          <div style={{ flex: 1 }}>
+            <h1 style={{ fontSize: '28px', fontWeight: '700', margin: 0 }}>
+              Welcome, <span style={{ color: styles.primaryRed }}>{userData.mobile}</span> !
             </h1>
           </div>
           
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: '#ffffff', padding: '8px 16px', borderRadius: '12px', border: '1px solid #e5e7eb' }}>
-            <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#fee2e2', color: '#dc2626', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+          {/* ইউজার প্রফাইল চিপ */}
+          <div onClick={() => setIsModalOpen(true)} style={{ display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: '#FFFFFF', padding: '8px 16px', borderRadius: '50px', border: `1px solid ${styles.borderLight}`, cursor: 'pointer' }}>
+            <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: styles.lightRedBg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: styles.primaryRed, fontWeight: '700' }}>
+              {userData.name.charAt(0)}
             </div>
             <div style={{ textAlign: 'left' }}>
-              <p style={{ fontSize: '13px', fontWeight: '700', color: '#111827', margin: 0 }}>{profile.fullName}</p>
-              <p style={{ fontSize: '11px', color: '#9ca3af', margin: '2px 0 0 0' }}>User</p>
+              <div style={{ fontSize: '13px', fontWeight: '600' }}>{userData.name}</div>
+              <div style={{ fontSize: '11px', color: styles.textMuted }}>User</div>
             </div>
           </div>
         </header>
 
-        {/* TOP CARDS SECTION */}
-        <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', marginBottom: '32px' }}>
-          {/* Balance Card */}
-          <div style={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '24px', padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-              <p style={{ fontSize: '12px', fontWeight: '700', color: '#9ca3af', textTransform: 'uppercase', margin: '0 0 4px 0' }}>Your Balance</p>
-              <h2 style={{ fontSize: '36px', fontWeight: '900', color: '#111827', margin: 0 }}>
-                <span style={{ color: '#dc2626' }}>৳</span> 0
-              </h2>
-              <button style={{ marginTop: '16px', backgroundColor: '#dc2626', color: '#ffffff', fontWeight: '700', fontSize: '12px', padding: '8px 16px', borderRadius: '12px', border: 'none', cursor: 'pointer' }}>
-                Logout
-              </button>
-            </div>
-            <div style={{ width: '56px', height: '56px', backgroundColor: '#fee2e2', color: '#dc2626', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
-            </div>
-          </div>
-
-          {/* Promo Action Card */}
-          <div style={{ background: 'linear-gradient(135deg, #dc2626, #b91c1c)', borderRadius: '24px', padding: '24px', color: '#ffffff', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gridColumn: 'span 2' }}>
-            <div>
-              <h3 style={{ fontSize: '22px', fontWeight: '900', margin: 0, letterSpacing: '-0.3px' }}>Complete Micro Jobs</h3>
-              <p style={{ fontSize: '16px', fontWeight: '700', margin: '4px 0', opacity: 0.9 }}>Earn Money Easily</p>
-              <p style={{ fontSize: '12px', margin: '8px 0 0 0', opacity: 0.8 }}>Simple tasks, instant rewards.</p>
-            </div>
-            <button style={{ backgroundColor: '#ffffff', color: '#dc2626', fontWeight: '800', fontSize: '14px', padding: '12px 24px', borderRadius: '12px', border: 'none', cursor: 'pointer' }}>
-              Start Working
-            </button>
-          </div>
-        </section>
-
-        {/* JOBS SECTION */}
-        <section style={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '24px', padding: '24px', marginBottom: '32px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
-            <div style={{ width: '40px', height: '40px', backgroundColor: '#fee2e2', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#dc2626' }}>
-              <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-            </div>
-            <div>
-              <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#111827', margin: 0 }}>Available Jobs</h3>
-              <p style={{ fontSize: '12px', color: '#9ca3af', margin: '2px 0 0 0' }}>Complete the tasks below and earn rewards.</p>
-            </div>
-          </div>
-
-          {/* Job Rows */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        {/* প্রধান ড্যাশবোর্ড ভিউ */}
+        {activeSection === 'dashboard' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
             
-            {/* Job 1 */}
-            <div style={{ border: '1px solid #f3f4f6', backgroundColor: '#ffffff', borderRadius: '16px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
-              <div style={{ display: 'flex', alignItems: 'start', gap: '12px' }}>
-                <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#fee2e2', color: '#dc2626', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700' }}>f</div>
-                <div>
-                  <h4 style={{ fontSize: '14px', fontWeight: '700', color: '#111827', margin: 0 }}>Like and share the BDzoon Facebook page.</h4>
-                  <div style={{ fontSize: '12px', color: '#dc2626', fontWeight: '700', marginTop: '4px' }}>Reward: ৳ 5</div>
+            {/* ব্যালেন্স এবং কুইক স্টার্ট গ্রিড */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '24px' }}>
+              {/* ব্যালেন্স কার্ড */}
+              <div style={styles.card}>
+                <p style={{ fontSize: '12px', fontWeight: '600', color: styles.textMuted, margin: '0 0 8px 0', textTransform: 'uppercase' }}>Your Balance</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+                  <span style={{ fontSize: '32px', fontWeight: '700' }}>৳ {userData.balance}</span>
                 </div>
+                <button onClick={handleLogout} style={{ backgroundColor: '#F5F5F5', color: '#666', border: 'none', padding: '8px 16px', borderRadius: '6px', fontSize: '12px', fontWeight: '600', cursor: 'pointer' }}>Logout</button>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                <a href="https://www.facebook.com/BDzoon.official" target="_blank" rel="noopener noreferrer" style={{ backgroundColor: '#dc2626', color: '#ffffff', fontWeight: '700', fontSize: '12px', padding: '10px 16px', borderRadius: '12px', textDecoration: 'none' }}>
-                  Click here to work →
-                </a>
-                <input type="file" style={{ fontSize: '12px', border: '1px solid #e5e7eb', padding: '6px', borderRadius: '12px', backgroundColor: '#f9fafb' }} />
-                <button style={{ backgroundColor: '#ffffff', color: '#dc2626', border: '1px solid #dc2626', fontWeight: '700', fontSize: '12px', padding: '10px 16px', borderRadius: '12px', cursor: 'pointer' }}>
-                  Submit Proof
+
+              {/* ৫. স্টার্ট ওয়ার্কিং ব্যানার */}
+              <div style={{ ...styles.card, backgroundColor: styles.primaryRed, color: '#FFFFFF', display: 'flex', justifyContent: 'between', alignItems: 'center', padding: '32px' }}>
+                <div style={{ flex: 1 }}>
+                  <h3 style={{ margin: 0, fontSize: '22px', fontWeight: '700' }}>Complete Micro Jobs</h3>
+                  <p style={{ margin: '4px 0 0 0', opacity: 0.9, fontSize: '14px' }}>Earn Money Easily — Simple tasks, instant rewards.</p>
+                </div>
+                <button onClick={scrollToJobs} style={{ backgroundColor: '#FFFFFF', color: styles.primaryRed, border: 'none', padding: '12px 24px', borderRadius: '8px', fontWeight: '700', cursor: 'pointer', fontSize: '14px', whiteSpace: 'nowrap' }}>
+                  Start Working
                 </button>
               </div>
             </div>
 
-            {/* Job 2 */}
-            <div style={{ border: '1px solid #f3f4f6', backgroundColor: '#ffffff', borderRadius: '16px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
-              <div style={{ display: 'flex', alignItems: 'start', gap: '12px' }}>
-                <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#fee2e2', color: '#dc2626', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9h18" /></svg>
-                </div>
+            {/* ২ ও ৩. অ্যাভেইলেবল জবস লিস্ট */}
+            <section ref={jobsSectionRef} style={styles.card}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px', borderBottom: `1px solid ${styles.borderLight}`, paddingBottom: '16px' }}>
+                <span style={{ fontSize: '24px' }}>💼</span>
                 <div>
-                  <h4 style={{ fontSize: '14px', fontWeight: '700', color: '#111827', margin: 0 }}>Visit the BDzoon website and take a screenshot.</h4>
-                  <div style={{ fontSize: '12px', color: '#dc2626', fontWeight: '700', marginTop: '4px' }}>Reward: ৳ 10</div>
+                  <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '700' }}>Available Jobs</h3>
+                  <p style={{ margin: 0, fontSize: '13px', color: styles.textMuted }}>Complete the tasks below and earn rewards.</p>
                 </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                <a href="https://www.bdzoon.com" target="_blank" rel="noopener noreferrer" style={{ backgroundColor: '#dc2626', color: '#ffffff', fontWeight: '700', fontSize: '12px', padding: '10px 16px', borderRadius: '12px', textDecoration: 'none' }}>
-                  Click here to work →
-                </a>
-                <input type="file" style={{ fontSize: '12px', border: '1px solid #e5e7eb', padding: '6px', borderRadius: '12px', backgroundColor: '#f9fafb' }} />
-                <button style={{ backgroundColor: '#ffffff', color: '#dc2626', border: '1px solid #dc2626', fontWeight: '700', fontSize: '12px', padding: '10px 16px', borderRadius: '12px', cursor: 'pointer' }}>
-                  Submit Proof
-                </button>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                {/* টাস্ক ১ */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '20px', borderRadius: '12px', border: `1px solid ${styles.borderLight}`, backgroundColor: '#FAFAFA' }}>
+                  <div style={{ display: 'flex', justifyContent: 'between', alignItems: 'start', width: '100%' }}>
+                    <div style={{ flex: 1 }}>
+                      <h4 style={{ margin: 0, fontSize: '15px', fontWeight: '600' }}>Like and share the BDzoon Facebook page.</h4>
+                      <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: styles.primaryRed, fontWeight: '700' }}>Reward: ৳ 5</p>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" style={{ ...styles.btnRed, textDecoration: 'none', display: 'inline-block' }}>
+                      Click here to work →
+                    </a>
+                    <input type="file" onChange={(e) => handleFileChange('task1', e)} style={{ fontSize: '13px' }} />
+                    <button onClick={() => handleSubmitProof('task1', 'Like and share the BDzoon Facebook page')} style={{ ...styles.btnRed, backgroundColor: '#1A1A1A' }}>
+                      Submit Proof
+                    </button>
+                  </div>
+                </div>
+
+                {/* টাস্ক ২ */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '20px', borderRadius: '12px', border: `1px solid ${styles.borderLight}`, backgroundColor: '#FAFAFA' }}>
+                  <div style={{ display: 'flex', justifyContent: 'between', alignItems: 'start', width: '100%' }}>
+                    <div style={{ flex: 1 }}>
+                      <h4 style={{ margin: 0, fontSize: '15px', fontWeight: '600' }}>Visit the BDzoon website and take a screenshot.</h4>
+                      <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: styles.primaryRed, fontWeight: '700' }}>Reward: ৳ 10</p>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                    <a href="https://google.com" target="_blank" rel="noopener noreferrer" style={{ ...styles.btnRed, textDecoration: 'none', display: 'inline-block' }}>
+                      Click here to work →
+                    </a>
+                    <input type="file" onChange={(e) => handleFileChange('task2', e)} style={{ fontSize: '13px' }} />
+                    <button onClick={() => handleSubmitProof('task2', 'Visit the BDzoon website and take a screenshot')} style={{ ...styles.btnRed, backgroundColor: '#1A1A1A' }}>
+                      Submit Proof
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* বটম স্ট্যাটস গ্রিড */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px' }}>
+              <div style={{ ...styles.card, display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 24px' }}>
+                <span style={{ fontSize: '24px', padding: '10px', backgroundColor: '#F5F5F5', borderRadius: '10px' }}>📁</span>
+                <div>
+                  <div style={{ fontSize: '12px', color: styles.textMuted }}>TOTAL JOBS</div>
+                  <div style={{ fontSize: '15px', fontWeight: '700' }}>{userData.totalJobs} Available to work</div>
+                </div>
+              </div>
+              <div style={{ ...styles.card, display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 24px' }}>
+                <span style={{ fontSize: '24px', padding: '10px', backgroundColor: '#F5F5F5', borderRadius: '10px' }}>💰</span>
+                <div>
+                  <div style={{ fontSize: '12px', color: styles.textMuted }}>TOTAL EARNINGS</div>
+                  <div style={{ fontSize: '15px', fontWeight: '700' }}>৳ {userData.totalEarnings} Keep working!</div>
+                </div>
+              </div>
+              <div style={{ ...styles.card, display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 24px' }}>
+                <span style={{ fontSize: '24px', padding: '10px', backgroundColor: '#F5F5F5', borderRadius: '10px' }}>🔗</span>
+                <div>
+                  <div style={{ fontSize: '12px', color: styles.textMuted }}>TOTAL REFERRALS</div>
+                  <div style={{ fontSize: '15px', fontWeight: '700' }}>{userData.totalReferrals} Invite and earn more</div>
+                </div>
               </div>
             </div>
 
-          </div>
-        </section>
+            {/* ৬. এডিট প্রোফাইল সেটিংস কুইক সেকশন */}
+            <section style={styles.card}>
+              <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: '700' }}>Edit Profile Settings</h3>
+              <button onClick={() => setIsModalOpen(true)} style={styles.btnRed}>
+                Edit Profile Details
+              </button>
+            </section>
 
-        {/* BOTTOM MATRIX */}
-        <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', marginBottom: '32px' }}>
-          <div style={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb', padding: '16px', borderRadius: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ width: '36px', height: '36px', backgroundColor: '#fee2e2', color: '#dc2626', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
-            </div>
-            <div>
-              <p style={{ fontSize: '10px', fontWeight: '700', color: '#9ca3af', textTransform: 'uppercase', margin: 0 }}>Total Jobs</p>
-              <p style={{ fontSize: '14px', fontWeight: '800', color: '#111827', margin: '2px 0 0 0' }}>2 Available to work</p>
-            </div>
           </div>
-          
-          <div style={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb', padding: '16px', borderRadius: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ width: '36px', height: '36px', backgroundColor: '#fee2e2', color: '#dc2626', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
-            </div>
-            <div>
-              <p style={{ fontSize: '10px', fontWeight: '700', color: '#9ca3af', textTransform: 'uppercase', margin: 0 }}>Total Earnings</p>
-              <p style={{ fontSize: '14px', fontWeight: '800', color: '#111827', margin: '2px 0 0 0' }}>৳ 0 Keep working!</p>
-            </div>
+        )}
+
+        {/* অন্যান্য মেনু ভিউ ব্যাকআপ (স্টেট টেস্ট করার জন্য) */}
+        {activeSection !== 'dashboard' && (
+          <div style={styles.card}>
+            <h3>{activeSection.toUpperCase()} Section</h3>
+            <p>This panel or section is now fully connected to the sidebar routing system.</p>
+            <button onClick={() => setActiveSection('dashboard')} style={styles.btnRed}>Back to Dashboard</button>
           </div>
+        )}
 
-          <div style={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb', padding: '16px', borderRadius: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ width: '36px', height: '36px', backgroundColor: '#fee2e2', color: '#dc2626', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-            </div>
-            <div>
-              <p style={{ fontSize: '10px', fontWeight: '700', color: '#9ca3af', textTransform: 'uppercase', margin: 0 }}>Total Referrals</p>
-              <p style={{ fontSize: '14px', fontWeight: '800', color: '#111827', margin: '2px 0 0 0' }}>0 Invite and earn more</p>
-            </div>
-          </div>
-        </section>
-
-        {/* ACCOUNT SETTINGS LINK */}
-        <section style={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '24px', padding: '24px' }}>
-          <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#111827', marginBottom: '16px' }}>Edit Profile Settings</h3>
-          <button onClick={() => { setTempProfile({ ...profile }); setIsEditModalOpen(true); }} style={{ backgroundColor: '#dc2626', color: '#ffffff', fontWeight: '700', fontSize: '12px', padding: '12px 20px', borderRadius: '12px', border: 'none', cursor: 'pointer' }}>
-            Edit Profile Details
-          </button>
-        </section>
-
-        {/* FOOTER */}
-        <footer style={{ marginTop: '48px', textAlign: 'center', fontSize: '11px', color: '#9ca3af', fontWeight: '500' }}>
-          © 2024 BDZOON. All rights reserved.
+        {/* ফুটার */}
+        <footer style={{ marginTop: '48px', textAlign: 'center', fontSize: '12px', color: styles.textMuted }}>
+          © 2026 BDZOON. All rights reserved.
         </footer>
       </main>
 
-      {/* INTERACTIVE POPUP MODAL */}
-      {isEditModalOpen && (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', zIndex: 100 }}>
-          <div style={{ backgroundColor: '#ffffff', borderRadius: '16px', width: '100%', maxWidth: '400px', overflow: 'hidden', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)' }}>
-            <div style={{ backgroundColor: '#dc2626', padding: '16px', color: '#ffffff', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h3 style={{ fontSize: '14px', fontWeight: '700', margin: 0 }}>Update Settings</h3>
-              <button onClick={() => setIsEditModalOpen(false)} style={{ backgroundColor: 'transparent', color: '#ffffff', border: 'none', fontWeight: '700', cursor: 'pointer' }}>✕</button>
-            </div>
-            <form onSubmit={handleProfileSave} style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      {/* ৬. প্রোফাইল পপআপ মডাল (Edit Profile Popup Modal) */}
+      {isModalOpen && (
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div style={{ backgroundColor: '#FFFFFF', padding: '32px', borderRadius: '16px', width: '450px', boxShadow: '0 10px 30px rgba(0,0,0,0.15)', position: 'relative' }}>
+            <h3 style={{ margin: '0 0 20px 0', fontSize: '20px', fontWeight: '700', color: styles.textDark }}>Edit Profile Details</h3>
+            
+            <form onSubmit={handleProfileSave} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', color: '#6b7280', marginBottom: '4px' }}>Full Name</label>
-                <input type="text" required value={tempProfile.fullName} onChange={(e) => setTempProfile({ ...tempProfile, fullName: e.target.value })} style={{ width: '100%', boxSizing: 'border-box', backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '12px', padding: '10px', fontSize: '14px' }} />
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px', color: styles.textMuted }}>Full Name</label>
+                <input type="text" value={editForm.name} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} required style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #CCC', fontSize: '14px' }} />
               </div>
+
               <div>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', color: '#6b7280', marginBottom: '4px' }}>Mobile Number</label>
-                <input type="text" required value={tempProfile.phone} onChange={(e) => setTempProfile({ ...tempProfile, phone: e.target.value })} style={{ width: '100%', boxSizing: 'border-box', backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '12px', padding: '10px', fontSize: '14px' }} />
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px', color: styles.textMuted }}>Mobile Number</label>
+                <input type="text" value={editForm.mobile} onChange={(e) => setEditForm({ ...editForm, mobile: e.target.value })} required style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #CCC', fontSize: '14px' }} />
               </div>
+
               <div>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', color: '#6b7280', marginBottom: '4px' }}>Username ID</label>
-                <input type="text" required value={tempProfile.username} onChange={(e) => setTempProfile({ ...tempProfile, username: e.target.value })} style={{ width: '100%', boxSizing: 'border-box', backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '12px', padding: '10px', fontSize: '14px' }} />
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px', color: styles.textMuted }}>Username ID</label>
+                <input type="text" value={editForm.username} onChange={(e) => setEditForm({ ...editForm, username: e.target.value })} required style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #CCC', fontSize: '14px' }} />
               </div>
+
               <div>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', color: '#6b7280', marginBottom: '4px' }}>Password</label>
-                <input type="password" required value={tempProfile.password} onChange={(e) => setTempProfile({ ...tempProfile, password: e.target.value })} style={{ width: '100%', boxSizing: 'border-box', backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '12px', padding: '10px', fontSize: '14px' }} />
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px', color: styles.textMuted }}>Password</label>
+                <input type="password" value={editForm.password} onChange={(e) => setEditForm({ ...editForm, password: e.target.value })} placeholder="••••••••" style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #CCC', fontSize: '14px' }} />
               </div>
-              <div style={{ display: 'flex', gap: '8px', paddingTop: '8px' }}>
-                <button type="button" onClick={() => setIsEditModalOpen(false)} style={{ flex: 1, backgroundColor: '#f3f4f6', color: '#4b5563', fontWeight: '700', fontSize: '12px', padding: '10px', borderRadius: '12px', border: 'none', cursor: 'pointer' }}>Cancel</button>
-                <button type="submit" style={{ flex: 1, backgroundColor: '#dc2626', color: '#ffffff', fontWeight: '700', fontSize: '12px', padding: '10px', borderRadius: '12px', border: 'none', cursor: 'pointer' }}>Save</button>
+
+              <div style={{ display: 'flex', justifyContent: 'end', gap: '12px', marginTop: '10px' }}>
+                <button type="button" onClick={() => setIsModalOpen(false)} style={{ backgroundColor: '#F0F0F0', color: '#333', border: 'none', padding: '10px 18px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer' }}>
+                  Cancel
+                </button>
+                <button type="submit" style={styles.btnRed}>
+                  Save Changes
+                </button>
               </div>
             </form>
           </div>
         </div>
       )}
-
     </div>
   );
 }
