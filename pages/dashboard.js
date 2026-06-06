@@ -1,26 +1,28 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import AuthModal from '../components/AuthModal';
 
 export default function Dashboard() {
-  // States
+  // সেশন স্টেট: ইউজার লগইন আছে কি না (ওল্ড ইউজারদের জন্য ডিফল্ট true রাখা হয়েছে)
+  const [isLoggedIn, setIsLoggedIn] = useState(true); 
   const [activeSection, setActiveSection] = useState('dashboard');
   const [copied, setCopied] = useState(false);
+  
+  // প্রোফাইল ডাটা স্টেট
   const [profile, setProfile] = useState({
     name: 'Nasir Rahman Talukder',
     mobile: '+9687005282',
     username: 'nasir700',
     password: '••••••••'
   });
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState({ ...profile });
   const [files, setFiles] = useState({ job1: null, job2: null });
 
-  // Refs
   const jobsRef = useRef(null);
-
-  // Constants
   const referralLink = "https://micro-job-world.vercel.app/?ref=9687005282";
 
-  // Handlers
+  // ফাংশন এবং হ্যান্ডলারসমূহ
   const handleCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(referralLink);
@@ -60,14 +62,20 @@ export default function Dashboard() {
 
   const handleLogout = () => {
     if (confirm("Are you sure you want to logout?")) {
+      setIsLoggedIn(false); // লগআউট করলে আবার লগইন পপআপ স্ক্রিন সামনে আসবে
       alert("Logged out successfully!");
     }
   };
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f8fafc', fontFamily: 'sans-serif', color: '#333' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f8fafc', fontFamily: 'sans-serif', color: '#333', position: 'relative' }}>
       
-      {/* 1. Sidebar Menu */}
+      {/* ১. কন্ডিশনাল পপআপ: ইউজার লগইন না থাকলে সুন্দর লাল-সাদা মডালটি ওপেন হবে */}
+      {!isLoggedIn && (
+        <AuthModal onLoginSuccess={() => setIsLoggedIn(true)} />
+      )}
+
+      {/* নেভিগেশন মেনু (Sidebar Menu) */}
       <aside style={{ width: '260px', backgroundColor: '#ffffff', borderRight: '1px solid #e2e8f0', padding: '20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
           <h1 style={{ color: '#e53e3e', fontSize: '22px', fontWeight: 'bold', margin: 0, letterSpacing: '0.5px' }}>BDZOON</h1>
@@ -102,60 +110,38 @@ export default function Dashboard() {
                 color: activeSection === item.id ? '#ffffff' : '#4a5568',
               }}
             >
-              <span style={{ fontSize: '16px' }}>{item.icon}</span>
+              <span>{item.icon}</span>
               {item.label}
             </button>
           ))}
           
-          <button
-            onClick={handleLogout}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              width: '100%',
-              padding: '12px 16px',
-              borderRadius: '8px',
-              border: 'none',
-              fontSize: '14px',
-              fontWeight: '500',
-              cursor: 'pointer',
-              textAlign: 'left',
-              backgroundColor: 'transparent',
-              color: '#4a5568',
-            }}
+          <button 
+            onClick={handleLogout} 
+            style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%', padding: '12px 16px', borderRadius: '8px', border: 'none', fontSize: '14px', fontWeight: '500', cursor: 'pointer', textAlign: 'left', backgroundColor: 'transparent', color: '#4a5568' }}
           >
-            <span style={{ fontSize: '16px' }}>Logout 🚪</span>
+            <span>🚪 Logout</span>
           </button>
         </nav>
 
-        {/* Referral Card in Sidebar */}
+        {/* রেফারেল কার্ড */}
         <div style={{ marginTop: 'auto', backgroundColor: '#fff5f5', border: '1px solid #fed7d7', padding: '16px', borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <span style={{ fontSize: '11px', fontWeight: 'bold', color: '#e53e3e' }}>YOUR REFERRAL LINK</span>
           <div style={{ backgroundColor: '#e53e3e', color: '#fff', padding: '8px', borderRadius: '6px', fontSize: '11px', wordBreak: 'break-all', fontFamily: 'monospace' }}>
             {referralLink}
           </div>
           <button 
-            onClick={handleCopyLink}
+            onClick={handleCopyLink} 
             style={{ backgroundColor: '#ffffff', color: '#e53e3e', border: '1px solid #e53e3e', padding: '8px', borderRadius: '6px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', width: '100%' }}
           >
             {copied ? 'Copied!' : 'Copy Link'}
           </button>
-          <div style={{ textAlign: 'center', marginTop: '5px' }}>
-            <span style={{ fontSize: '10px', color: '#718096', display: 'block', marginBottom: '5px' }}>SHARE & EARN MORE</span>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
-              {['f', 't', 'w'].map((soc) => (
-                <span key={soc} style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: '#fff', border: '1px solid #e2e8f0', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', color: '#e53e3e', fontWeight: 'bold' }}>{soc}</span>
-              ))}
-            </div>
-          </div>
         </div>
       </aside>
 
-      {/* Main Content Area */}
+      {/* মেইন কন্টেন্ট উইন্ডো */}
       <main style={{ flex: 1, padding: '30px', display: 'flex', flexDirection: 'column', gap: '24px', overflowY: 'auto' }}>
         
-        {/* Top Header */}
+        {/* হেডার এবং স্বাগতম মেসেজ */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 'bold' }}>
@@ -163,7 +149,7 @@ export default function Dashboard() {
             </h2>
           </div>
           <div 
-            onClick={() => { setModalData({ ...profile }); setIsModalOpen(true); }}
+            onClick={() => { setModalData({ ...profile }); setIsModalOpen(true); }} 
             style={{ display: 'flex', alignItems: 'center', gap: '10px', backgroundColor: '#ffffff', padding: '8px 16px', borderRadius: '30px', border: '1px solid #e2e8f0', cursor: 'pointer' }}
           >
             <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#fff5f5', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#e53e3e' }}>👤</div>
@@ -174,106 +160,86 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Dynamic Section Rendering */}
+        {/* মেইন ড্যাশবোর্ড সেকশন */}
         {activeSection === 'dashboard' && (
           <>
-            {/* Balance Card */}
-            <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '400px' }}>
+            {/* ব্যালেন্স কার্ড */}
+            <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '24px', display: 'flex', justifyContent: 'space-between', maxWidth: '400px', boxSizing: 'border-box' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <span style={{ fontSize: '11px', color: '#a0aec0', fontWeight: 'bold', letterSpacing: '0.5px' }}>YOUR BALANCE</span>
-                <span style={{ fontSize: '32px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px' }}>৳ <span style={{ color: '#000' }}>0</span></span>
-                <button onClick={handleLogout} style={{ backgroundColor: '#e53e3e', color: '#ffffff', border: 'none', padding: '6px 16px', borderRadius: '6px', fontSize: '12px', fontWeight: '600', cursor: 'pointer', marginTop: '4px', width: 'fit-content' }}>Logout</button>
+                <span style={{ fontSize: '11px', color: '#a0aec0', fontWeight: 'bold' }}>YOUR BALANCE</span>
+                <span style={{ fontSize: '32px', fontWeight: 'bold' }}>৳ 0</span>
+                <button onClick={handleLogout} style={{ backgroundColor: '#e53e3e', color: '#ffffff', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: '600', cursor: 'pointer', marginTop: '4px' }}>Logout</button>
               </div>
-              <div style={{ width: '48px', height: '48px', borderRadius: '12px', backgroundColor: '#fff5f5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', color: '#e53e3e' }}>💳</div>
+              <div style={{ fontSize: '24px', backgroundColor: '#fff5f5', padding: '12px', borderRadius: '12px', height: 'fit-content' }}>💳</div>
             </div>
 
-            {/* Complete Micro Jobs Banner */}
-            <div style={{ backgroundColor: '#e53e3e', borderRadius: '16px', padding: '24px', color: '#ffffff', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            {/* মাইক্রো জবস ব্যানার */}
+            <div style={{ backgroundColor: '#e53e3e', borderRadius: '16px', padding: '24px', color: '#ffffff', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
               <div>
                 <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 'bold' }}>Complete Micro Jobs</h3>
-                <p style={{ margin: '4px 0 0 0', fontSize: '14px', fontWeight: '500' }}>Earn Money Easily</p>
-                <span style={{ fontSize: '12px', opacity: 0.9, display: 'block', marginTop: '8px' }}>Simple tasks, instant rewards.</span>
+                <p style={{ margin: '4px 0 0 0', fontSize: '14px' }}>Earn Money Easily</p>
+                <span style={{ fontSize: '12px', opacity: 0.9, display: 'block', marginTop: '4px' }}>Simple tasks, instant rewards.</span>
               </div>
-              {/* 5. Start Working Button */}
               <button 
-                onClick={handleScrollToJobs}
-                style={{ backgroundColor: '#ffffff', color: '#e53e3e', border: 'none', padding: '12px 24px', borderRadius: '8px', fontSize: '14px', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}
+                onClick={handleScrollToJobs} 
+                style={{ backgroundColor: '#ffffff', color: '#e53e3e', border: 'none', padding: '12px 24px', borderRadius: '8px', fontSize: '14px', fontWeight: 'bold', cursor: 'pointer' }}
               >
                 Start Working
               </button>
             </div>
 
-            {/* Jobs Section Container */}
+            {/* জব লিস্ট এরিয়া */}
             <div ref={jobsRef} style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: '#fff5f5', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#e53e3e' }}>💼</div>
-                <div>
-                  <h4 style={{ margin: 0, fontSize: '16px', fontWeight: 'bold' }}>Available Jobs</h4>
-                  <span style={{ fontSize: '12px', color: '#a0aec0' }}>Complete the tasks below and earn rewards.</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ fontSize: '20px' }}>💼</span>
+                <h4 style={{ margin: 0, fontSize: '16px', fontWeight: 'bold' }}>Available Jobs</h4>
+              </div>
+              
+              {/* টাস্ক ১ */}
+              <div style={{ border: '1px solid #edf2f7', borderRadius: '12px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                <h5 style={{ margin: 0, fontSize: '14px', fontWeight: '600' }}>Like and share the BDzoon Facebook page.</h5>
+                <span style={{ fontSize: '12px', color: '#e53e3e', fontWeight: 'bold' }}>Reward: ৳ 5</span>
+                <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '12px' }}>
+                  <a href="https://www.facebook.com/BDzoon.official" target="_blank" rel="noreferrer">
+                    <button style={{ backgroundColor: '#e53e3e', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: '600' }}>Click here to work →</button>
+                  </a>
+                  <input type="file" onChange={(e) => handleFileChange('job1', e)} style={{ fontSize: '12px' }} />
+                  <button onClick={() => handleSubmitProof('job1', 'BDzoon Facebook Page Like')} style={{ backgroundColor: '#ffffff', color: '#e53e3e', border: '1px solid #e53e3e', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: '600' }}>Submit Proof</button>
                 </div>
               </div>
 
-              {/* Job Task 1 */}
+              {/* টাস্ক ২ */}
               <div style={{ border: '1px solid #edf2f7', borderRadius: '12px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                  <span style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: '#fff5f5', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#e53e3e', fontSize: '12px' }}>👍</span>
-                  <div>
-                    <h5 style={{ margin: 0, fontSize: '14px', fontWeight: '600' }}>Like and share the BDzoon Facebook page.</h5>
-                    <span style={{ fontSize: '12px', color: '#e53e3e', fontWeight: '600', display: 'block', marginTop: '2px' }}>Reward: ৳ 5</span>
-                  </div>
-                </div>
+                <h5 style={{ margin: 0, fontSize: '14px', fontWeight: '600' }}>Visit the BDzoon website and take a screenshot.</h5>
+                <span style={{ fontSize: '12px', color: '#e53e3e', fontWeight: 'bold' }}>Reward: ৳ 10</span>
                 <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '12px' }}>
-                  {/* 2. Job Action Button */}
-                  <a href="https://www.facebook.com/BDzoon.official" target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
-                    <button style={{ backgroundColor: '#e53e3e', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '6px', fontSize: '12px', fontWeight: '600', cursor: 'pointer' }}>Click here to work →</button>
+                  <a href="https://www.bdzoon.com" target="_blank" rel="noreferrer">
+                    <button style={{ backgroundColor: '#e53e3e', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: '600' }}>Click here to work →</button>
                   </a>
-                  {/* 3. Proof Submit System */}
-                  <input type="file" id="file-job1" onChange={(e) => handleFileChange('job1', e)} style={{ fontSize: '12px' }} />
-                  <button onClick={() => handleSubmitProof('job1', 'Like and share the BDzoon Facebook page.')} style={{ backgroundColor: '#ffffff', color: '#e53e3e', border: '1px solid #e53e3e', padding: '8px 16px', borderRadius: '6px', fontSize: '12px', fontWeight: '600', cursor: 'pointer' }}>Submit Proof</button>
-                </div>
-              </div>
-
-              {/* Job Task 2 */}
-              <div style={{ border: '1px solid #edf2f7', borderRadius: '12px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                  <span style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: '#fff5f5', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#e53e3e', fontSize: '12px' }}>🌐</span>
-                  <div>
-                    <h5 style={{ margin: 0, fontSize: '14px', fontWeight: '600' }}>Visit the BDzoon website and take a screenshot.</h5>
-                    <span style={{ fontSize: '12px', color: '#e53e3e', fontWeight: '600', display: 'block', marginTop: '2px' }}>Reward: ৳ 10</span>
-                  </div>
-                </div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '12px' }}>
-                  {/* 2. Job Action Button */}
-                  <a href="https://www.bdzoon.com" target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
-                    <button style={{ backgroundColor: '#e53e3e', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '6px', fontSize: '12px', fontWeight: '600', cursor: 'pointer' }}>Click here to work →</button>
-                  </a>
-                  {/* 3. Proof Submit System */}
-                  <input type="file" id="file-job2" onChange={(e) => handleFileChange('job2', e)} style={{ fontSize: '12px' }} />
-                  <button onClick={() => handleSubmitProof('job2', 'Visit the BDzoon website and take a screenshot.')} style={{ backgroundColor: '#ffffff', color: '#e53e3e', border: '1px solid #e53e3e', padding: '8px 16px', borderRadius: '6px', fontSize: '12px', fontWeight: '600', cursor: 'pointer' }}>Submit Proof</button>
+                  <input type="file" onChange={(e) => handleFileChange('job2', e)} style={{ fontSize: '12px' }} />
+                  <button onClick={() => handleSubmitProof('job2', 'BDzoon Website Visit')} style={{ backgroundColor: '#ffffff', color: '#e53e3e', border: '1px solid #e53e3e', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: '600' }}>Submit Proof</button>
                 </div>
               </div>
             </div>
 
-            {/* Bottom Stats Grid */}
+            {/* স্ট্যাটাস গ্রিড বক্সসমূহ */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
               <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{ width: '32px', height: '32px', borderRadius: '6px', backgroundColor: '#fff5f5', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#e53e3e' }}>🗑️</div>
+                <span style={{ fontSize: '20px' }}>🗑️</span>
                 <div>
                   <span style={{ fontSize: '10px', color: '#a0aec0', fontWeight: 'bold' }}>TOTAL JOBS</span>
                   <p style={{ margin: 0, fontSize: '13px', fontWeight: 'bold' }}>2 Available to work</p>
                 </div>
               </div>
-
               <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{ width: '32px', height: '32px', borderRadius: '6px', backgroundColor: '#fff5f5', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#e53e3e' }}>💰</div>
+                <span style={{ fontSize: '20px' }}>💰</span>
                 <div>
                   <span style={{ fontSize: '10px', color: '#a0aec0', fontWeight: 'bold' }}>TOTAL EARNINGS</span>
                   <p style={{ margin: 0, fontSize: '13px', fontWeight: 'bold' }}>৳ 0 Keep working!</p>
                 </div>
               </div>
-
               <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{ width: '32px', height: '32px', borderRadius: '6px', backgroundColor: '#fff5f5', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#e53e3e' }}>👥</div>
+                <span style={{ fontSize: '20px' }}>👥</span>
                 <div>
                   <span style={{ fontSize: '10px', color: '#a0aec0', fontWeight: 'bold' }}>TOTAL REFERRALS</span>
                   <p style={{ margin: 0, fontSize: '13px', fontWeight: 'bold' }}>0 Invite and earn more</p>
@@ -281,12 +247,12 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* 6. Edit Profile Settings Button Trigger */}
-            <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <h4 style={{ margin: 0, fontSize: '16px', fontWeight: 'bold' }}>Edit Profile Settings</h4>
+            {/* প্রোফাইল সেটিংস সেকশন */}
+            <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '24px' }}>
+              <h4 style={{ margin: 0, fontSize: '16px', fontWeight: 'bold', marginBottom: '12px' }}>Edit Profile Settings</h4>
               <button 
                 onClick={() => { setModalData({ ...profile }); setIsModalOpen(true); }}
-                style={{ backgroundColor: '#e53e3e', color: '#ffffff', border: 'none', padding: '10px 20px', borderRadius: '6px', fontSize: '14px', fontWeight: '600', cursor: 'pointer', width: 'fit-content' }}
+                style={{ backgroundColor: '#e53e3e', color: '#ffffff', border: 'none', padding: '10px 20px', borderRadius: '6px', fontSize: '14px', fontWeight: '600', cursor: 'pointer' }}
               >
                 Edit Profile Details
               </button>
@@ -294,78 +260,50 @@ export default function Dashboard() {
           </>
         )}
 
-        {/* Fallback windows for other sections */}
+        {/* অন্যান্য সাব-মেনুগুলোর জন্য কন্টেন্ট হোল্ডার */}
         {activeSection !== 'dashboard' && (
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '40px', textAlign: 'center' }}>
             <h3 style={{ textTransform: 'capitalize', fontSize: '20px', marginBottom: '10px' }}>{activeSection.replace('-', ' ')} Section</h3>
-            <p style={{ color: '#718096' }}>Content for {activeSection} is loaded here active.</p>
+            <p style={{ color: '#718096' }}>Content for {activeSection} is fully active.</p>
             <button onClick={() => setActiveSection('dashboard')} style={{ backgroundColor: '#e53e3e', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '6px', marginTop: '15px', cursor: 'pointer' }}>Back to Dashboard</button>
           </div>
         )}
 
-        {/* Footer */}
         <footer style={{ marginTop: 'auto', textAlign: 'center', padding: '20px 0', fontSize: '11px', color: '#a0aec0' }}>
           © 2026 BDZOON. All rights reserved.
         </footer>
       </main>
 
-      {/* 6. Profile Popup Modal Form */}
+      {/* প্রোফাইল পপআপ মডাল ফর্ম */}
       {isModalOpen && (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
-          <div style={{ backgroundColor: '#ffffff', borderRadius: '16px', padding: '28px', width: '90%', maxWidth: '450px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999 }}>
+          <div style={{ backgroundColor: '#ffffff', borderRadius: '16px', padding: '28px', width: '90%', maxWidth: '450px', boxSizing: 'border-box' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
               <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 'bold' }}>Update Profile Details</h3>
-              <button onClick={() => setIsModalOpen(false)} style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', color: '#a0aec0' }}>&times;</button>
+              <button onClick={() => setIsModalOpen(false)} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', color: '#a0aec0' }}>&times;</button>
             </div>
             
             <form onSubmit={handleProfileSave} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 <label style={{ fontSize: '12px', fontWeight: 'bold', color: '#4a5568' }}>Full Name</label>
-                <input 
-                  type="text" 
-                  value={modalData.name} 
-                  onChange={(e) => setModalData({ ...modalData, name: e.target.value })}
-                  required
-                  style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #auto', fontSize: '14px' }}
-                />
+                <input type="text" value={modalData.name} onChange={(e) => setModalData({ ...modalData, name: e.target.value })} required style={{ padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1' }} />
               </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 <label style={{ fontSize: '12px', fontWeight: 'bold', color: '#4a5568' }}>Mobile Number</label>
-                <input 
-                  type="text" 
-                  value={modalData.mobile} 
-                  onChange={(e) => setModalData({ ...modalData, mobile: e.target.value })}
-                  required
-                  style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #auto', fontSize: '14px' }}
-                />
+                <input type="text" value={modalData.mobile} onChange={(e) => setModalData({ ...modalData, mobile: e.target.value })} required style={{ padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1' }} />
               </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 <label style={{ fontSize: '12px', fontWeight: 'bold', color: '#4a5568' }}>Username ID</label>
-                <input 
-                  type="text" 
-                  value={modalData.username} 
-                  onChange={(e) => setModalData({ ...modalData, username: e.target.value })}
-                  required
-                  style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #auto', fontSize: '14px' }}
-                />
+                <input type="text" value={modalData.username} onChange={(e) => setModalData({ ...modalData, username: e.target.value })} required style={{ padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1' }} />
               </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 <label style={{ fontSize: '12px', fontWeight: 'bold', color: '#4a5568' }}>Password</label>
-                <input 
-                  type="password" 
-                  value={modalData.password} 
-                  onChange={(e) => setModalData({ ...modalData, password: e.target.value })}
-                  required
-                  style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #auto', fontSize: '14px' }}
-                />
+                <input type="password" value={modalData.password} onChange={(e) => setModalData({ ...modalData, password: e.target.value })} required style={{ padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1' }} />
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '10px' }}>
-                <button type="button" onClick={() => setIsModalOpen(false)} style={{ backgroundColor: '#edf2f7', color: '#4a5568', border: 'none', padding: '10px 16px', borderRadius: '6px', fontSize: '14px', fontWeight: '600', cursor: 'pointer' }}>Cancel</button>
-                <button type="submit" style={{ backgroundColor: '#e53e3e', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '6px', fontSize: '14px', fontWeight: '600', cursor: 'pointer' }}>Save Changes</button>
+                <button type="button" onClick={() => setIsModalOpen(false)} style={{ backgroundColor: '#edf2f7', color: '#4a5568', border: 'none', padding: '10px 16px', borderRadius: '6px', cursor: 'pointer', fontWeight: '600' }}>Cancel</button>
+                <button type="submit" style={{ backgroundColor: '#e53e3e', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '6px', cursor: 'pointer', fontWeight: '600' }}>Save Changes</button>
               </div>
             </form>
           </div>
